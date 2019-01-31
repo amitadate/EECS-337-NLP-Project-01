@@ -3,7 +3,7 @@ Repository for projects undertaken in the course ' Natural Language Processing '
 
 ## Team Members:
 
-Amit Adate @amitadate
-Omkar Satpute @omkarstpt
-Mayank Malik @mayankmalik01
-Aditya Kumar @adijays17
+1. Amit Adate @amitadate
+2. Omkar Satpute @omkarstpt
+3. Mayank Malik @mayankmalik01
+4. Aditya Kumar @adijays17
