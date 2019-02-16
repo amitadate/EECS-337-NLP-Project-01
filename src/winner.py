@@ -30,29 +30,35 @@ def get_winner_new(year):
             award_list_not_person.append(award)
                 
     for award in award_list_not_person:
-        english_stop_words = [] #set(stopwords.words('english'))
         ignore_list=["@","#"]
         winner_stoplist = ['-', 'animated', 'best', 'comedy', 'drama', 'feature', 'film', 'foreign', 'globe', 'goes', 'golden', 'motion', 'movie', 'musical', 'or', 'original', 'picture', 'rt', 'series', 'song', 'television', 'to', 'tv'] 
-        final_stop_list = list(english_stop_words) + winner_stoplist +ignore_list
         bigrams_list = []
-        trimmed=[]
         ignore_list=["@","#"]
+        
         for tweet in tweet_award_dict[award]:
+            
             tweet = re.sub(r'[^\w\s]','',tweet)
             if tweet[0] == "R" and tweet[1]=="T":
                 continue
-            bigrams = nltk.bigrams(tweet.split())
-            for bigram in bigrams:
-                if bigram[0].lower() not in final_stop_list and bigram[1].lower() not in final_stop_list:
-                    if bigram[0] not in ignore_list and bigram[0] not in ignore_list:
-                        bigrams_list.append(bigram)     
-                        
-        for item in bigrams_list:
-            freq[award] = nltk.FreqDist([' '.join(item)])
-            #print(freq[award])
+
+            bigram = nltk.bigrams(tweet.split())
+            
+            temp=[]
+            for item in bigram:
+                if item[0].lower() not in winner_stoplist and item[1].lower() not in winner_stoplist:
+                    temp.append(item)
+                
+                
+            for item in temp:
+                if item[0][0] not in ignore_list and item[1][0] not in ignore_list:
+                    bigrams_list.append(item)
+
+
+        freq[award] = nltk.FreqDist([' '.join(item) for item in bigrams_list])
+
 
     for award in award_list:
         winners[award] = freq[award].most_common(1)[0][0]
+
     return winners
-    
     
