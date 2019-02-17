@@ -17,6 +17,7 @@ TWEETS = {}
 global AWARD_TWEET_DICTS
 AWARD_TWEET_DICTS = {}
 
+
 def get_tweets(year):
     if year in TWEETS:
         return TWEETS[year]
@@ -30,62 +31,150 @@ def get_tweets(year):
         except:
             return False
 
+
 def get_award_tweet_dict(year):
     if year in AWARD_TWEET_DICTS:
         return AWARD_TWEET_DICTS[year]
     else:
         sort_tweets(year)
         return AWARD_TWEET_DICTS[year]
-    
+
+
 def sort_tweets(year):
 
-    print ("\nprocessing data for {} (this may take up to 7-8 minutes the first time)...".format(year))
+    print("\nprocessing data for {} (this may take up to 7-8 minutes the first time)...".format(year))
 
     tweets = get_tweets(year)
-    print('what')
-    award_tweet_dict = {award:[] for award in OFFICIAL_AWARDS}
-
-    stoplist = ['best','-','award','for','or','made', 'in', 'a', 'by', 'performance', 'an','role']
-    clean_award_names = {award:[[a for a in award.split() if not a in stoplist]] for award in OFFICIAL_AWARDS}
-    #print(clean_award_names)
-
-
-    substitutes = {}
-    substitutes["television"] = ['tv','t.v.']
-    substitutes["motion picture"] = ["movie", "film"]
-    substitutes["film"] = ["motion picture", "movie"]
-    substitutes["comedy or musical"] = ['comedy','musical']
-    substitutes["series, mini-series or motion picture made for television"] = ['series','mini-series','miniseries','tv','television','tv movie','tv series', 'television series']
-
-    substitutes["mini-series or motion picture made for television"] = ['miniseries','mini-series','tv movie','television movie']
-    substitutes["television series"] = ['series','tv','t.v.','television']
-    substitutes["television series - comedy or musical"] = ["tv comedy", "tv musical", "comedy series", "t.v. comedy", "t.v. musical", "television comedy", "television musical"]
-    substitutes["television series - drama"] = ["tv drama", "drama series", "television drama", "t.v. drama"]
-    substitutes["foreign language"] = ["foreign"]
+    tweet_by_award_dict = dict()
 
     for award in OFFICIAL_AWARDS:
-        for key in substitutes:
-            if key in award:
-                for sub in substitutes[key]:
-                    alt_award = award.replace(key, sub)
-                    clean_award_names[award].append([w for w in alt_award.split() if not w in stoplist])
+        tweet_by_award_dict[award] = []
 
+    to_delete = ['-', 'a', 'an', 'award', 'best', 'by', 'for', 'in', 'made', 'or', 'performance', 'role', 'feature', 'language']
+
+    fresh_names = dict()
+    for award in OFFICIAL_AWARDS:
+        fresh_names[award] = [[item for item in award.split() if not item in to_delete]]
+#     print('####################FRESH NAMES##########################')
+#     print(fresh_names)
+#     print('#########################################################')
+
+    for award in OFFICIAL_AWARDS:
+        if "television" in award:
+            alt_award = award.replace("television", 'tv')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("television", 't.v.')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+        if "motion picture" in award:
+            alt_award = award.replace("motion picture", "movie")
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("motion picture", "film")
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+        if "film" in award:
+            alt_award = award.replace("film", "motion picture")
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("film", "movie")
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+        if "comedy or musical" in award:
+            alt_award = award.replace("comedy or musical", 'comedy')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("comedy or musical", 'musical')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+        if "series, mini-series or motion picture made for television" in award:
+            alt_award = award.replace("series, mini-series or motion picture made for television", 'series')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("series, mini-series or motion picture made for television", 'mini-series')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("series, mini-series or motion picture made for television", 'miniseries')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("series, mini-series or motion picture made for television", 'tv')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("series, mini-series or motion picture made for television", 'television')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("series, mini-series or motion picture made for television", 'tv movie')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("series, mini-series or motion picture made for television", 'tv series')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("series, mini-series or motion picture made for television", 'television series')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+        if "mini-series or motion picture made for television" in award:
+            alt_award = award.replace("mini-series or motion picture made for television", 'miniseries')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("mini-series or motion picture made for television", 'mini-series')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("mini-series or motion picture made for television", 'tv movie')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("mini-series or motion picture made for television", 'television movie')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+        if "television series" in award:
+            alt_award = award.replace("television series", 'series')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("television series", 'tv')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("television series", 't.v.')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+            alt_award = award.replace("television series", 'television')
+            fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+        if "television series - comedy or musical" in award:
+
+            for word in ["tv comedy", "tv musical", "comedy series", "t.v. comedy", "t.v. musical", "television comedy", "television musical"]:
+                alt_award = award.replace("television series - comedy or musical", word)
+                fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
+
+        if "television series - drama" in award:
+            for word in ["tv drama", "drama series", "television drama", "t.v. drama"]:
+                alt_award = award.replace("television series - drama", word)
+                fresh_names[award].append([item for item in alt_award.split() if not item in to_delete])
 
     OFFICIAL_AWARDS.sort(key=lambda s: len(s), reverse=True)
+#     print('####################FRESH NAMES##########################')
+#     print(fresh_names)
+#     print('#########################################################')
     for award in OFFICIAL_AWARDS:
-        # print "{} tweets unsorted".format(len(tweets))
-        for i in range(len(tweets)-1,-1,-1):
+        tweet_length = len(tweets)
+        for i in range(tweet_length - 1, -1, -1):
             tweet = tweets[i]
-            for alt_award in clean_award_names[award]:
-                contains_important_words = True
-                for word in alt_award:
-                    contains_important_words = contains_important_words and word.lower() in tweet.lower()
+            for extra in fresh_names[award]:
+                flag = True
+                for word in extra:
+                    if flag == True:
+                        flag = flag and word.lower() in tweet.lower()
 
-                if contains_important_words:
-                    # print alt_award
-                    award_tweet_dict[award].append(tweet)
+                if flag == True:
+                    tweet_by_award_dict[award].append(tweet)
                     del tweets[i]
                     break
 
-    AWARD_TWEET_DICTS[year] = award_tweet_dict
+#     for key in tweet_by_award_dict:
+#         print(tweet_by_award_dict[key])
+#         print(key)
+#         break
+    # cecil b. demille award
+    #print(tweet_by_award_dict['cecil b. demille award'])
+    # print('Called################')
+    AWARD_TWEET_DICTS[year] = tweet_by_award_dict
     return
