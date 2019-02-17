@@ -155,7 +155,9 @@ def sort_tweets(year):
 #     print(fresh_names)
 #     print('#########################################################')
     for award in OFFICIAL_AWARDS:
-        for tweet in tweets:
+        tweet_length = len(tweets)
+        for i in range(tweet_length - 1, -1, -1):
+            tweet = tweets[i]
             for extra in fresh_names[award]:
                 flag = True
                 for word in extra:
@@ -164,7 +166,7 @@ def sort_tweets(year):
 
                 if flag == True:
                     tweet_by_award_dict[award].append(tweet)
-                    tweets.remove(tweet)
+                    del tweets[i]
                     break
 
 #     for key in tweet_by_award_dict:
