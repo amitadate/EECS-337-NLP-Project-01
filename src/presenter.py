@@ -1,57 +1,55 @@
 def get_presenters(year):
-    '''Presenters is a dictionary with the hard coded award
-    names as keys, and each entry a list of strings. Do NOT change the
-    name of this function or what it returns.'''
-    # Your code here
     ia = IMDb()
     if not get_tweets(year):
         print("No Data")
         return None
     award_tweet_dict = get_award_tweet_dict(year)
 
-    presenters = {}
-    stop = ["Award", "Film", "Movie", "Foreign"]
+    presenters_dict_by_awards = {}
+    stop = ["Movie", "Foreign", "Golden", "Award", "GoldenGlobes", "Globes", "Goldenglobes", "Film"]
 
-    p_pattern = re.compile(r'[A-Z][a-z]+\s[A-Z][a-z]+(?=\spresent)')
-    p2_pattern = re.compile(r'[A-Z][a-z]+\s[A-Z][a-z]+\sand\s[A-Z][a-z]+\s[A-Z][a-z]+(?=\spresent|\sintroduc)')
+    single_presenter_pattern = re.compile(r'[A-Z][a-z]+\s[A-Z][a-z]+(?=\spresent)')
+    multiple_presenters_pattern = re.compile(r'[A-Z][a-z]+\s[A-Z][a-z]+\sand\s[A-Z][a-z]+\s[A-Z][a-z]+(?=\spresent|\sintroduc)')
 
     for award in award_tweet_dict:
-        presenters[award] = []
+        presenters_dict_by_awards[award] = []
 
         for tweet in award_tweet_dict[award]:
-            presenter_pair = re.findall(p2_pattern, tweet)
-            single_presenter = re.findall(p_pattern, tweet)
-            flag = True
+            multiple_presenters = re.findall(multiple_presenters_pattern, tweet)
 
-            for p in presenter_pair:
-                p1 = p.split(' and')[0]
+            for presenter in multiple_presenters:
+                pp = presenter.split(' and ')
+                p1 = pp[0]
                 if any(word in p1 for word in stop):
-                    flag = False
+                    continue
 
-                p2 = ' '.join((p.split(' and ')[1]).split(' ')[:2])
+                pp = presenter.split(' and ')
+                pt = pp[1]
+                ptt = pt.split(' ')
+                pttname = ptt[0:2]
+                p2 = ' '.join(pttname)
                 if any(word in p2 for word in stop):
-                    flag = False
+                    continue
 
-                # first encounter of both presenters
-                if flag:
-                    person = ia.search_person(p1)
-                    if person:
-                        p1 = person[0]['name'].lower()
-                    person = ia.search_person(p2)
-                    if person:
-                        p2 = person[0]['name'].lower()
-                    if p1 not in presenters[award]:
-                        presenters[award].append(p1)
-                    if p2 not in presenters[award]:
-                        presenters[award].append(p2)
-
-            for p in single_presenter:
-                if any(word in p for word in stop):
-                    flag = False
-                person = ia.search_person(p)
+                person = ia.search_person(p1)
                 if person:
-                    p = person[0]['name'].lower()
-                if flag and p not in presenters[award]:
-                    presenters[award].append(p)
+                    p1 = person[0]['name'].lower()
+                person = ia.search_person(p2)
+                if person:
+                    p2 = person[0]['name'].lower()
+                if p1 not in presenters_dict_by_awards[award]:
+                    presenters_dict_by_awards[award].append(p1)
+                if p2 not in presenters_dict_by_awards[award]:
+                    presenters_dict_by_awards[award].append(p2)
 
-    return presenters
+            single_presenter = re.findall(single_presenter_pattern, tweet)
+            for presenter in single_presenter:
+                if any(word in presenter for word in stop):
+                    continue
+                person = ia.search_person(presenter)
+                if person:
+                    presenter = person[0]['name'].lower()
+                if presenter not in presenters_dict_by_awards[award]:
+                    presenters_dict_by_awards[award].append(presenter)
+
+    return presenters_dict_by_awards
