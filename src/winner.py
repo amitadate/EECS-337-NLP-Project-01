@@ -1,4 +1,4 @@
-def get_winner_new(year):
+def get_winner(year):
 
     award_list = OFFICIAL_AWARDS
     
