@@ -15,3 +15,10 @@ Repository for projects undertaken in the course ' Natural Language Processing '
 4. Put "ggYYYY.json" files in the root directory, such as gg2013.json or gg2015.json
 5. Run gg_api.py (to get a menu interface and choose option 11 to output json files)
 6. Run autograder.py to get completeness and spelling scores
+
+## References
+1. [rmacedo1/EECS337_GG2015](https://github.com/rmacedo1/EECS337_GG2015)
+2. [surabhiiyer/GoldenGlobes](https://github.com/surabhiiyer/GoldenGlobes/blob/41697b1b86f9b840c385bbe4524e915a24a4a97c/src/main.py)
+3. [isaacrlee/twitterlab](https://github.com/isaacrlee/twitterlab)
+4. [philipslan/goldenglobes](https://github.com/philipslan/goldenglobes)
+5. [estettin/EECS337_Project1](https://github.com/estettin/EECS337_Project1)
