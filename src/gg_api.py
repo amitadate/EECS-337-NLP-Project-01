@@ -223,7 +223,7 @@ def get_hosts(year):
     of this function or what it returns.'''
     tweets = get_tweets(year)
     stopword_list = stopwords.words('english')
-    stopword_list = stopword_list + ['#','?', 'golden', 'globe', 'globes', 'http']
+    stopword_list = stopword_list + ['#','?', 'golden', 'globe', 'globes', 'http', 'https', 'co']
     common_names = []
     for tweet in tweets:
         if re.findall(r"\s[hH]osted?",tweet):
@@ -295,6 +295,10 @@ def get_awards(year):
 #########
 def get_nominees(year):
     ia = IMDb()
+
+    if not get_tweets(year):
+        print("No Data")
+        return None
 
     stop_list_people = ['best','-','award','for','or','made', 'in', 'a', 'by', 'performance', 'an','golden','globes','role','motion','picture','best','supporting']
     nominees = {}
@@ -420,7 +424,8 @@ def get_nominees(year):
                 nominees[award].append(p2)
 
     for k,v in nominees.items():
-        v.pop(0)
+        if v:
+            v.pop(0)
 
 
 
@@ -904,7 +909,7 @@ def main():
 
     year = ""
     while year != "exit":
-        print ('\nKINDLY CHOOSE YEAR OF PREFERENCE ?\n\n OR TYPE EXIT TO QUIT PROGRAM.\nONLY VALID INPUTS ARE A YEAR NAME OR NUMBERS FROM [ 0 - 11]\nFOR OTHER INPUTS YOU WILL FACE AN ERROR ')
+        print ('\n\n\nTYPE EXIT TO QUIT PROGRAM.\nONLY VALID INPUTS ARE A YEAR NAME OR NUMBERS FROM [ 0 - 11]\nFOR OTHER INPUTS YOU WILL FACE AN ERROR \n\n\n *****KINDLY TYPE THE YEAR OF PREFERENCE***** \n\n ')
         print ('--------------------------------')
         year = input()
         set_official_awards(year)
@@ -922,6 +927,22 @@ def main():
                 user_input = str(input("Enter 1 ----> Hosts\n\nEnter 2 ----> Awards\n\nEnter 3 ----> Nominees\n\nEnter 4 ----> Presenters\n\nEnter 5 ----> Winners\n\nEnter 6 ----> top 5 most discussed people\n\nEnter 7 ----> top 5 most controversially dressed\n\nEnter 8 ----> top 5 best dressed people\n\nEnter 9 ----> top 5 worst dressed people\n\nEnter 11 --> CREATE JSON FILE and TXT File\n\nEnter 0 ----> EXIT back to TOGGLE YEARS  "))
 
                 if user_input == "0":
+                    global host_global
+                    host_global = []
+                    global presenters_global
+                    presenters_global = {}
+                    global nominee_global
+                    nominee_global = {}
+                    global winners_global
+                    winners_global = {}
+                    global m_disscussed
+                    m_disscussed = []
+                    global best_dressed_global
+                    best_dressed_global = []
+                    global worst_dressed_global
+                    worst_dressed_global = []
+                    global c_dressed_global
+                    c_dressed_global =[]
                     break
                 else:
                     SWITCH_DICT = { "1" : func_one, "2" : func_two, "3" : func_three, "4" : func_four, "5" : func_five, "6" : func_six, "7" : func_seven, "8" : func_eight, "9" : func_nine, '11': get_json}
