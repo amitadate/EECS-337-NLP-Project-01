@@ -9,7 +9,7 @@ goslate==1.5.1
 idna==2.8
 IMDbPY==6.6
 lxml==4.3.1
-nltk==3.4
+nltk==3.4.5
 PyDictionary==1.5.2
 requests==2.21.0
 singledispatch==3.4.0.3
